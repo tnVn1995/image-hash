@@ -6,7 +6,7 @@ This is a temporary script file.
 """
 
 import requests 
-API_KEY = '13570746-6c4abd4d2437c7d64baac7be0'
+API_KEY = 'Your API here'
 term = 'sad+face'
 URL = 'https://pixabay.com/api/'
 
