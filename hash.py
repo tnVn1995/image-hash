@@ -38,8 +38,8 @@ def hammingDistance(x, y):
     for i in range(ll):
         if biX[i] != biY[i]:
             n += 1
-    return n  
-  
+    return n
+
 
 def dhash(image, hashSize=8):
     image = cv2.imread(image)
@@ -73,6 +73,8 @@ print(f'[INFO] copy 1st image in to {args["copypath"]}...')
 print(hashes)
 copy_path = args['copypath']
 shutil.copy(os.path.join(args['imgpath'], list_imgs[0]), copy_path)
+#Create a duplicate dictionary
+duplicate = {}
 # Itereate over the list of images in imgpath
 for p in list_imgs[1:]:
     img_path = os.path.join(args['imgpath'],p)
@@ -82,8 +84,12 @@ for p in list_imgs[1:]:
     for hash in hashes:
         try:
             if hammingDistance(im_hash, hash) <= 10:
-                print(f'[INFO] found one duplicate for {get_key(img_w_has,hash)}...')
+                key = get_key(img_w_has,hash)
+                print(f'[INFO] found one duplicate for {key}...')
                 print('[INFO] Leave the duplicate in the old directory...')
+                print('[INFO] store duplicates')
+                duplicates[key] = []
+                duplicates[key].append(p)
             else:
                 print(f'[INFO] moving image to new directory...')
                 print(f'[INFO] store hash values in database')
