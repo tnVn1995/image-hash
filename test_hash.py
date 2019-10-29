@@ -42,24 +42,27 @@ def hammingDistance(x, y):
     return n
 
 
-def dhash(image, hashSize=8):
-    image = cv2.imread(image)
+def dhash(image_path, hashSize=8):
+    image = cv2.imread(image_path)
     # Skip image if None
     if image is None:
+        print('[INFO] this is nonetype')
+        os.remove(image_path)
         pass
     # resize the input image, adding a single column (width) so we
     # can compute the horizontal gradient
-    try:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        resized = cv2.resize(image, (hashSize + 1, hashSize))
-        # compute the (relative) horizontal gradient between adjacent
-        # column pixels
-        diff = resized[:, 1:] > resized[:, :-1]
+    else:
+        try:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            resized = cv2.resize(image, (hashSize + 1, hashSize))
+            # compute the (relative) horizontal gradient between adjacent
+            # column pixels
+            diff = resized[:, 1:] > resized[:, :-1]
 
-        # convert the difference image to a hash
-        return sum([2 ** i for (i, v) in enumerate(diff.flatten()) if v])
-    except Exception as e:
-        print(e)
+            # convert the difference image to a hash
+            return sum([2 ** i for (i, v) in enumerate(diff.flatten()) if v])
+        except Exception as e:
+            print(e)
 
 
 def get_key(dictionary,val):
@@ -95,7 +98,7 @@ if __name__ == '__main__':
         im_hash = dhash(im_path)
         print(f'{p}\'s hash value is:', im_hash)
         for hash in hashes:
-            if hammingDistance(im_hash, hash) <= 10:
+            if hammingDistance(im_hash, hash) <= 2:
                 key = get_key(img_w_has, hash)
                 duplicate[key].append(p)
             else:
@@ -106,9 +109,12 @@ if __name__ == '__main__':
 #                print(f'[INFO] the dict hash value now is {img_w_has}')
                 if im_hash not in hashes:
                     hashes.append(im_hash)
+                    print(f'[INFO]: {os.path.join(file_path2, im_path)}')
+                    shutil.copy(os.path.join(file_path2, im_path), copy_path)
 #                print('List of hash value is',hashes)
         for key, val in duplicate.items():
-            shutil.copy(os.path.join(file_path2, val[0]), copy_path)
+            # print('[INFO] the src path is:', file_path2)
+            # shutil.copy(os.path.join(file_path2, val[0]), copy_path) No idea why I inserted it's here
             if len(val) >= 2:
                 print('[INFO] duplicates are:', val)
     end = time.time()
